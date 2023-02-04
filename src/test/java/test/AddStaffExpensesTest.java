@@ -1,0 +1,133 @@
+package test;
+
+import java.io.IOException;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.testng.Assert;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+
+import pojo.ChromeBrowser;
+import pojo.FirefoxBrowser;
+import pojo.MicrosoftEdgeBrowser;
+import pom.AddStaffExpenses;
+import pom.TransportLogInPage;
+import utitlity.ExcelSheetForAddStaffExpenses;
+import utitlity.ExcelSheetForSignIn;
+import utitlity.Reports;
+@Listeners(Listener.class)
+public class AddStaffExpensesTest extends BaseClass {
+
+	ExtentReports extent;
+	ExtentTest test;
+	
+	@BeforeTest
+	public void generateStaffExpensesReports()
+	{
+		extent = Reports.configureReport("System Testing", "Add Staff Expenses", "Swapnil Ramteke");
+	}
+	@Test
+	public void addStaffExpensesOnChrome() throws EncryptedDocumentException, IOException
+	{
+		driver = ChromeBrowser.launchBrowser();
+		
+		TransportLogInPage transportLogInPage = new TransportLogInPage(driver);
+		String userName = ExcelSheetForSignIn.fetchData(1, 0);
+		String password = ExcelSheetForSignIn.fetchData(1, 1);
+		String title = driver.getTitle();
+		Assert.assertEquals(title, "Login - Transport Management");
+		transportLogInPage.logIn(driver, userName, password);
+		
+		test = extent.createTest("addStaffExpensesOnChrome");
+		
+		AddStaffExpenses addStaffExpenses = new AddStaffExpenses(driver);
+		addStaffExpenses.openAddStaffExpensesForm(driver);
+		
+		String nameOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 0);
+		String dateOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 1);
+		String priceOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 2);
+		String advanceAmount = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 3);
+		String remarks = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 4);
+		String pathOfInvoice = "E:\\Dummy Images\\Expenses.png";
+		addStaffExpenses.addStaffExpenses(driver, nameOfExpense, dateOfExpense, priceOfExpense, advanceAmount, remarks, pathOfInvoice);
+	}
+	@Test(priority = 1)
+	public void addStaffExpensesOnFirefox() throws EncryptedDocumentException, IOException
+	{
+		driver = FirefoxBrowser.openFirefox();
+		
+		TransportLogInPage transportLogInPage = new TransportLogInPage(driver);
+		String userName = ExcelSheetForSignIn.fetchData(1, 0);
+		String password = ExcelSheetForSignIn.fetchData(1, 1);
+		String title = driver.getTitle();
+		Assert.assertEquals(title, "Login - Transport Management");
+		transportLogInPage.logIn(driver, userName, password);
+		
+		test = extent.createTest("addStaffExpensesOnFirefox");
+		
+		AddStaffExpenses addStaffExpenses = new AddStaffExpenses(driver);
+		addStaffExpenses.openAddStaffExpensesForm(driver);
+		
+		String nameOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 0);
+		String dateOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 1);
+		String priceOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 2);
+		String advanceAmount = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 3);
+		String remarks = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 4);
+		String pathOfInvoice = "E:\\Dummy Images\\Expenses.png";
+		addStaffExpenses.addStaffExpenses(driver, nameOfExpense, dateOfExpense, priceOfExpense, advanceAmount, remarks, pathOfInvoice);
+	}
+	@Test(priority = 2)
+	public void addStaffExpensesOnEdge() throws EncryptedDocumentException, IOException
+	{
+		driver = MicrosoftEdgeBrowser.microsoftEdge();
+		
+		TransportLogInPage transportLogInPage = new TransportLogInPage(driver);
+		String userName = ExcelSheetForSignIn.fetchData(1, 0);
+		String password = ExcelSheetForSignIn.fetchData(1, 1);
+		String title = driver.getTitle();
+		Assert.assertEquals(title, "Login - Transport Management");
+		transportLogInPage.logIn(driver, userName, password);
+		
+		test = extent.createTest("addStaffExpensesOnEdge");
+		
+		AddStaffExpenses addStaffExpenses = new AddStaffExpenses(driver);
+		addStaffExpenses.openAddStaffExpensesForm(driver);
+		
+		String nameOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 0);
+		String dateOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 1);
+		String priceOfExpense = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 2);
+		String advanceAmount = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 3);
+		String remarks = ExcelSheetForAddStaffExpenses.fetchStaffExpenses(1, 4);
+		String pathOfInvoice = "E:\\Dummy Images\\Expenses.png";
+		addStaffExpenses.addStaffExpenses(driver, nameOfExpense, dateOfExpense, priceOfExpense, advanceAmount, remarks, pathOfInvoice);
+	}
+	@AfterMethod
+	public void checkResult(ITestResult result)
+	{
+		if(result.getStatus() == ITestResult.SUCCESS)
+		{
+			test.log(Status.PASS, result.getName());
+		}
+		else if(result.getStatus() == ITestResult.FAILURE)
+		{
+			test.log(Status.FAIL, result.getName());
+		}
+		else
+		{
+			test.log(Status.SKIP, result.getName());
+		}
+	}
+	@AfterTest
+	public void flushReport()
+	{
+		extent.flush();
+	}
+}

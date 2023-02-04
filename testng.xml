@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Transport Management System">
+  <test thread-count="5" name="Expenses Module Testing">
+       <classes>
+            <class name="test.AddVehicleExpensesTest"></class>
+            <class name="test.AddDriverExpensesTest"></class>
+            <class name="test.AddStaffExpensesTest"></class>
+       
+       </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
